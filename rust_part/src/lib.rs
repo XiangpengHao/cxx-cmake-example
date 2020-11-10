@@ -1,13 +1,15 @@
 use std::fmt;
 
-#[cxx::bridge(namespace = rust_part)]
+#[cxx::bridge]
 mod ffi {
+    #[namespace = "shared"]
     struct Color {
         r: u8,
         g: u8,
         b: u8,
     }
 
+    #[namespace = "shared"]
     struct SharedThing {
         points: Box<Points>,
         persons: UniquePtr<Person>,
@@ -20,13 +22,24 @@ mod ffi {
 
         fn get_name(person: &Person) -> &CxxString;
         fn make_person() -> UniquePtr<Person>;
+        fn is_black(self: &Color) -> bool;
     }
 
     extern "Rust" {
+        #[namespace = "rust_part"]
         type Points;
+
+        #[namespace = "rust_part"]
         fn print_shared_thing(points: &SharedThing);
+
+        #[namespace = "rust_part"]
         fn make_shared_thing() -> SharedThing;
+
+        #[namespace = "rust_part"]
         fn rust_echo(val: i32) -> i32;
+
+        #[namespace = "shared"]
+        fn is_white(self: &Color) -> bool;
     }
 }
 
@@ -37,12 +50,20 @@ pub struct Points {
 }
 
 impl ffi::Color {
-    pub fn new() -> Self {
+    pub fn white() -> Self {
         Self {
             r: 255,
             g: 255,
             b: 255,
         }
+    }
+
+    pub fn black() -> Self {
+        Self { r: 0, g: 0, b: 0 }
+    }
+
+    pub fn is_white(&self) -> bool {
+        self.r == 255 && self.g == 255 && self.b == 255
     }
 }
 
@@ -58,7 +79,11 @@ impl fmt::Debug for ffi::Color {
 
 fn print_shared_thing(thing: &ffi::SharedThing) {
     println!("{:#?}", thing.points);
-    println!("{:#?}", thing.pixels);
+    println!(
+        "Pixel 0 is white: {}, pixel is black: {}",
+        thing.pixels[0].is_white(),
+        thing.pixels[1].is_black()
+    );
     println!("{:#?}", ffi::get_name(thing.persons.as_ref().unwrap()));
 }
 
@@ -69,7 +94,7 @@ fn make_shared_thing() -> ffi::SharedThing {
             y: vec![4, 5, 6],
         }),
         persons: ffi::make_person(),
-        pixels: vec![ffi::Color::new(), ffi::Color::new()],
+        pixels: vec![ffi::Color::white(), ffi::Color::black()],
     }
 }
 

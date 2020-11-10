@@ -12,6 +12,11 @@ std::unique_ptr<Person> make_person()
     return std::make_unique<Person>();
 }
 
+bool shared::Color::is_black() const noexcept
+{
+    return this->r == 0 && this->g == 0 && this->b == 0;
+}
+
 int cpp_echo(int val)
 {
     return val;
