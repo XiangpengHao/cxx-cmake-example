@@ -25,20 +25,16 @@ mod ffi {
         fn is_black(self: &Color) -> bool;
     }
 
+    #[namespace = "rust_part"]
     extern "Rust" {
-        #[namespace = "rust_part"]
         type Points;
-
-        #[namespace = "rust_part"]
         fn print_shared_thing(points: &SharedThing);
-
-        #[namespace = "rust_part"]
         fn make_shared_thing() -> SharedThing;
-
-        #[namespace = "rust_part"]
         fn rust_echo(val: i32) -> i32;
+    }
 
-        #[namespace = "shared"]
+    #[namespace = "shared"]
+    extern "Rust" {
         fn is_white(self: &Color) -> bool;
     }
 }
