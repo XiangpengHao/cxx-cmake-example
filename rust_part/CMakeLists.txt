@@ -12,23 +12,17 @@ endif()
 
 set(RUST_PART_LIB "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/librust_part.a")
 
-add_custom_target(rust_part ALL
-    COMMENT "Compiling rust_part module"
-    COMMAND CARGO_TARGET_DIR=${CMAKE_CURRENT_BINARY_DIR} RUSTFLAGS="${RUST_FLAGS}" ${CARGO_CMD} 
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(rust_part PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY_DIR})
-
 set(RUST_PART_CXX "${CMAKE_CURRENT_BINARY_DIR}/rust_part.cpp")
-add_library(rust_part_cxx STATIC ${RUST_PART_CXX})
+add_library(rust_part STATIC ${RUST_PART_CXX})
 add_custom_command(
     OUTPUT ${RUST_PART_CXX}
-    COMMAND cxxbridge src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/rust_part.h
-    COMMAND cxxbridge src/lib.rs > ${RUST_PART_CXX}
+    COMMAND CARGO_TARGET_DIR=${CMAKE_CURRENT_BINARY_DIR} RUSTFLAGS="${RUST_FLAGS}" ${CARGO_CMD}
+    COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/cxxbridge/rust_part/src/lib.rs.cc ${RUST_PART_CXX}
+    COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/cxxbridge/rust_part/src/lib.rs.h ${CMAKE_CURRENT_BINARY_DIR}/rust_part.h
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.rs
 )
 
-target_link_libraries(rust_part_cxx pthread dl ${RUST_PART_LIB})
+target_link_libraries(rust_part pthread dl ${RUST_PART_LIB})
 
 add_test(NAME rust_part_test 
     COMMAND cargo test

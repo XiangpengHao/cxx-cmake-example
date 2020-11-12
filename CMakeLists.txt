@@ -27,6 +27,4 @@ add_subdirectory(rust_part)
 
 add_executable(main main.cpp)
 
-add_dependencies(main rust_part)
-
-target_link_libraries(main rust_part_cxx)
+target_link_libraries(main rust_part)

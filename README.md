@@ -10,10 +10,9 @@ This template repo shows how to use cmake with cxx.
 
 
 The cmake files do the following things:
-1. Call `cargo build [--release]` to build a static library
-2. Call `cxxbridge src/lib.rs > ...` to generate the source/header files (as specified [here](https://github.com/dtolnay/cxx#non-cargo-setup))
-3. Create a library from the cxx generated source and link to the rust static library
-4. Link and include the libraray to the corresponding targets
+1. Call `cargo build [--release]` to build the static library and the necessary c++ header/source files
+2. Create a library from the cxx generated source and link to the rust static library
+3. Link and include the libraray to the corresponding targets
 
 
 ## Cross-language LTO (linking time optimization)
