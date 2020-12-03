@@ -16,7 +16,7 @@ mod ffi {
         pixels: Vec<Color>,
     }
 
-    extern "C++" {
+    unsafe extern "C++" {
         include!("cpp_part.h");
         type Person;
 
