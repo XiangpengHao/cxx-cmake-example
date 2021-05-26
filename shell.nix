@@ -1,6 +1,6 @@
 let
-  name = "nixos-20.09-2021-05-26";
-  commit-id = "76ed24ceab9ec8b520f977a2803181f0c1d86b4d";
+  name = "nixos-unstable-2021-05-25";
+  commit-id = "ea7d4aa9b8225abd6147339f0d56675d6f1f0fd1";
   pkgs-url = "https://github.com/nixos/nixpkgs/archive/${commit-id}.tar.gz";
 
   oxalica-rust-overlay = import (fetchTarball https://github.com/oxalica/rust-overlay/archive/master.tar.gz);
@@ -44,7 +44,7 @@ let
 in mkShell {
   inherit name;
   buildInputs = [
-    llvmPkgs.lldClang.bintools
+    llvmPkgs.clangUseLLVM.bintools
     rust
     pkgs.cmake
   ];
