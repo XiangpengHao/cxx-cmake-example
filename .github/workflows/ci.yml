@@ -30,4 +30,4 @@ jobs:
         - run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
         - run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_LTO=${{matrix.lto}} ..
         - run: cd build && make
-        - run: cd build && ./main
+        - run: cd build && ./main ${{matrix.lto}}
