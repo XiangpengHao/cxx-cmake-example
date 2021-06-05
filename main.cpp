@@ -84,6 +84,11 @@ int main(int argc, char** argv)
       return EXIT_FAILURE;
     }
 
+
+    // Protect against divide-by-zero: sometimes d_cpp is 0 ns! This causes the
+    // ratio calculation to fail.
+    d_rust++;
+    d_cpp++;
     auto ratio = (float)d_rust / d_cpp;
 
     std::cout << "Rust execution took " << d_rust << " ns, C++ execution took " << d_cpp << " ns. Ratio: " << ratio << std::endl;
