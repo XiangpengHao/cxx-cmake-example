@@ -44,7 +44,7 @@ let
 in mkShell {
   inherit name;
   buildInputs = [
-    llvmPkgs.clangUseLLVM.bintools
+    llvmPkgs.bintools
     rust
     pkgs.cmake
   ];
