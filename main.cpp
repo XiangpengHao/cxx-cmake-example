@@ -1,6 +1,8 @@
 #include <iostream>
+#include <string>
 #include "rust_part.h"
 #include <chrono>
+#include <tuple>
 
 const std::string &get_name(const Person &person)
 {
@@ -22,51 +24,83 @@ int cpp_echo(int val)
     return val;
 }
 
-int test_fun()
+#define N 1000000
+
+int test_rust_speed()
 {
     int sum = 0;
-    for (int i = 0; i < 1000000; i += 1)
+    for (int i = 0; i < N; i += 1)
     {
         sum += rust_part::rust_echo(i);
     }
     return sum;
 }
 
-int test_inline()
+int test_cpp_speed()
 {
     int sum = 0;
-    for (int i = 0; i < 1000000; i += 1)
+    for (int i = 0; i < N; i += 1)
     {
         sum += cpp_echo(i);
     }
     return sum;
 }
 
-void test_lto()
+auto test_lto()
 {
-    auto t1 = std::chrono::high_resolution_clock::now();
-    auto sum = test_fun();
-    auto t2 = std::chrono::high_resolution_clock::now();
+    using std::chrono::high_resolution_clock;
 
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count();
+    auto r_t1 = high_resolution_clock::now();
+    auto r_sum = test_rust_speed();
+    auto r_t2 = high_resolution_clock::now();
 
-    std::cout << "Calling rust function"
-              << ", time elapsed: " << duration << " ns." << std::endl;
+    auto c_t1 = high_resolution_clock::now();
+    auto c_sum = test_cpp_speed();
+    auto c_t2 = high_resolution_clock::now();
 
-    t1 = std::chrono::high_resolution_clock::now();
-    sum = test_inline();
-    t2 = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count();
+    auto c_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(c_t2 - c_t1).count();
+    auto r_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(r_t2 - r_t1).count();
 
-    std::cout << "Calling c++ function"
-              << ", time elapsed: " << duration << " ns." << std::endl;
+    return std::make_tuple(r_duration, c_duration, r_sum, c_sum);
 }
 
-int main()
+int main(int argc, char** argv)
 {
+    if (argc != 2) {
+      std::cerr
+        << "One argument expected: ON | OFF, indicating whether LTO is enabled."
+        << std::endl;
+      return EXIT_FAILURE;
+    }
+    bool lto_on = argv[1] == std::string("ON");
+
     auto thing = rust_part::make_shared_thing();
     rust_part::print_shared_thing(thing);
 
-    test_lto();
-    return 0;
+    auto [d_rust, d_cpp, r_sum, c_sum] = test_lto();
+    std::cout << "Results produced by Rust / C++: " << r_sum << " / " << c_sum << std::endl;
+    if (r_sum != c_sum) {
+      std::cerr << "Rust and C++ versions returned mismatching results." << std::endl;
+      return EXIT_FAILURE;
+    }
+
+
+    // Protect against divide-by-zero: sometimes d_cpp is 0 ns! This causes the
+    // ratio calculation to fail.
+    d_rust++;
+    d_cpp++;
+    auto ratio = (float)d_rust / d_cpp;
+
+    std::cout << "Rust execution took " << d_rust << " ns, C++ execution took " << d_cpp << " ns. Ratio: " << ratio << std::endl;
+
+    bool rust_much_slower_than_cpp = d_rust / d_cpp > 10;
+
+    if (lto_on && rust_much_slower_than_cpp) {
+      std::cerr
+        << "Cross-language LTO appears not to be working as Rust is too slow."
+        << std::endl;
+      return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+
 }

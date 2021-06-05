@@ -7,7 +7,7 @@ else ()
 endif ()
 
 if(ENABLE_LTO)
-    set(RUST_FLAGS "-Clinker-plugin-lto" "-Clinker=clang-11" "-Clink-arg=-fuse-ld=lld-11")
+    set(RUST_FLAGS "-Clinker-plugin-lto" "-Clinker=clang" "-Clink-arg=-fuse-ld=lld")
 endif()
 
 set(RUST_PART_LIB "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/librust_part.a")
@@ -24,7 +24,6 @@ add_custom_command(
 
 target_link_libraries(rust_part pthread dl ${RUST_PART_LIB})
 
-add_test(NAME rust_part_test 
+add_test(NAME rust_part_test
     COMMAND cargo test
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
