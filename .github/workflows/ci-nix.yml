@@ -1,0 +1,33 @@
+name: CXX Nix CMake CI
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+
+jobs:
+    ubuntu-build:
+        runs-on: ubuntu-20.04
+        strategy:
+            matrix:
+              lto: ["ON", "OFF"]
+
+        steps:
+
+        - name: Checkout
+          uses: actions/checkout@v2.0.0
+
+        - name: Install Nix
+          uses: cachix/install-nix-action@v12
+          with:
+            nix_path: nixpkgs=channel:nixos-21.05
+
+        - uses: Swatinem/rust-cache@v1
+
+        - name: Install dependencies via Nix
+          run: nix-shell
+
+        - run: nix-shell --run "mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_LTO=${{matrix.lto}} .."
+        - run: nix-shell --run "cd build && make"
+        - run: nix-shell --run "cd build && ./main ${{matrix.lto}}"
