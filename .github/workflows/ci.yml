@@ -14,8 +14,8 @@ jobs:
               lto: ["ON", "OFF"]
         env:
             DEBIAN_FRONTEND: noninteractive
-            CC: clang-11
-            CXX: clang++-11
+            CC: clang-12
+            CXX: clang++-12
         steps:
         - name: Checkout
           uses: actions/checkout@v2.0.0
