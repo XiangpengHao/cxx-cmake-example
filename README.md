@@ -1,6 +1,9 @@
 # CXX with CMake build system
 ![CXX CMake CI](https://github.com/XiangpengHao/cxx-cmake-example/workflows/CXX%20CMake%20CI/badge.svg)
 
+Update 1-16-2022: I added a dockerfile to help people reproducing the results reported here.
+
+
 This is an example repo to setup [cxx](https://github.com/dtolnay/cxx) with the cmake build system.
 
 The official [demo](https://github.com/dtolnay/cxx/tree/master/demo) used `cargo` to orchestrate the two build systems and place the `main` function inside the rust project.
@@ -16,7 +19,6 @@ The cmake files do the following things:
 
 
 ## Cross-language LTO (linking time optimization)
-More details in [my blog](https://blog.haoxp.xyz/posts/cross-lang-lto-guide/).
 
 ### Why?
 Calling rust function from c++ (and vice versa) is not zero-overhead because the LLVM optimizer by default will not optimize across shared libraries, let alone across different languages.
