@@ -7,7 +7,7 @@ else ()
 endif ()
 
 if(ENABLE_LTO)
-    set(RUST_FLAGS "-Clinker-plugin-lto" "-Clinker=clang-12" "-Clink-arg=-fuse-ld=lld-12")
+    set(RUST_FLAGS "-Clinker-plugin-lto" "-Clinker=clang-13" "-Clink-arg=-fuse-ld=lld-13")
 endif()
 
 set(RUST_PART_LIB "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/librust_part.a")

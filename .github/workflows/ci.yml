@@ -14,20 +14,22 @@ jobs:
               lto: ["ON", "OFF"]
         env:
             DEBIAN_FRONTEND: noninteractive
-            CC: clang-12
-            CXX: clang++-12
+            CC: clang-13
+            CXX: clang++-13
         steps:
         - name: Checkout
           uses: actions/checkout@v2.0.0
         - name: Setup rust toolchain
           uses: actions-rs/toolchain@v1
           with:
-            toolchain: stable 
+            toolchain: 1.58.0
             override: true
         - run: cargo install cxxbridge-cmd
         - run: sudo apt update
         - run: sudo apt install -y cmake git
-        - run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+        - run: wget https://apt.llvm.org/llvm.sh
+        - run: chmod +x ./llvm.sh
+        - run: sudo ./llvm.sh 13 13
         - run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_LTO=${{matrix.lto}} ..
         - run: cd build && make
         - run: cd build && ./main
