@@ -7,7 +7,6 @@ RUN apt-get update \
 	&& apt-get install -y build-essential curl cmake git wget lsb-release software-properties-common 
 
 RUN curl https://sh.rustup.rs -sSf | bash -s -- --default-toolchain 1.74.1 -y
-RUN rustc --version
 
 RUN wget https://apt.llvm.org/llvm.sh \
 	&& chmod +x ./llvm.sh \
