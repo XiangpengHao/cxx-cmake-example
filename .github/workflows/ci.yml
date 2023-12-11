@@ -14,8 +14,8 @@ jobs:
               lto: ["ON", "OFF"]
         env:
             DEBIAN_FRONTEND: noninteractive
-            CC: clang-13
-            CXX: clang++-13
+            CC: clang-17
+            CXX: clang++-17
         steps:
         - name: Checkout
           uses: actions/checkout@v2.0.0
@@ -29,7 +29,7 @@ jobs:
         - run: sudo apt install -y cmake git
         - run: wget https://apt.llvm.org/llvm.sh
         - run: chmod +x ./llvm.sh
-        - run: sudo ./llvm.sh 13 13
+        - run: sudo ./llvm.sh 17 17
         - run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_LTO=${{matrix.lto}} ..
         - run: cd build && make
         - run: cd build && ./main
