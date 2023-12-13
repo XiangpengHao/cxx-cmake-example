@@ -1,8 +1,6 @@
 # CXX with CMake build system
 ![CXX CMake CI](https://github.com/XiangpengHao/cxx-cmake-example/workflows/CXX%20CMake%20CI/badge.svg)
 
-Update 1-16-2022: I added a dockerfile to help people reproducing the results reported here.
-
 
 This is an example repo to setup [cxx](https://github.com/dtolnay/cxx) with the cmake build system.
 
@@ -17,6 +15,10 @@ The cmake files do the following things:
 2. Create a library from the cxx generated source and link to the rust static library
 3. Link and include the libraray to the corresponding targets
 
+## Demo 
+```bash
+docker build . --no-cache --progress plain
+```
 
 ## Cross-language LTO (linking time optimization)
 
