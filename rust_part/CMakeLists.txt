@@ -6,6 +6,13 @@ else ()
     set(TARGET_DIR "release")
 endif ()
 
+# If the user is cross compiling to a different target, update the location of the target directory
+# *Note*: Make sure to install the target with rustup, as well as setting the proper environment variables, such as CC, HOST_CC, CARGO_TARGET_<triple>_LINKER, ...
+# See https://doc.rust-lang.org/cargo/reference/environment-variables.html#configuration-environment-variables
+if (DEFINED ENV{CARGO_BUILD_TARGET})
+    set(TARGET_DIR "$ENV{CARGO_BUILD_TARGET}/${TARGET_DIR}")
+endif()
+
 if(ENABLE_LTO)
     set(RUST_FLAGS "-Clinker-plugin-lto" "-Clinker=clang-17" "-Clink-arg=-fuse-ld=lld-17")
 endif()
